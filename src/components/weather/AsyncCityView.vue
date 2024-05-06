@@ -104,6 +104,7 @@
     <div
       class="flex items-center gap-2 py-12 text-white cursor-pointer duration-150 hover:text-red-500"
       @click="removeCity"
+      v-if="!route.query.preview"
     >
       <i class="fa-solid fa-trash"></i>
       <p>Remove City</p>
@@ -114,12 +115,13 @@
 <script setup>
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
+import config from "@/config";
 
 const route = useRoute();
 const getWeatherData = async () => {
   try {
     const weatherData = await axios.get(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${route.query.lat}&lon=${route.query.lng}&exclude={part}&appid=7efa332cf48aeb9d2d391a51027f1a71&units=metric`
+      `${config.openWeatherOneCallApi}?lat=${route.query.lat}&lon=${route.query.lng}&exclude={part}&appid=${config.openWeatherAppId}&units=metric`
     );
 
     // cal current date & time
@@ -151,7 +153,7 @@ const removeCity = () => {
   const updatedCities = cities.filter((city) => city.id !== route.query.id);
   localStorage.setItem("savedCities", JSON.stringify(updatedCities));
   router.push({
-    path: "home",
+    name: "home",
   });
 };
 </script>

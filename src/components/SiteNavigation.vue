@@ -59,37 +59,43 @@
 <script setup>
 import { ref } from "vue";
 import { uid } from "uid";
-import { RouterLink, useRoute, useRouter } from "vue-router";
-import BaseModal from "./BaseModal.vue";
+import { useRoute, useRouter } from "vue-router";
+import BaseModal from "@/components/ui/BaseModal.vue";
 
 const savedCities = ref([]);
 const route = useRoute();
 const router = useRouter();
+const modalActive = ref(null);
+
 const addCity = () => {
-  if (localStorage.getItem("savedCities")) {
-    savedCities.value = JSON.parse(localStorage.getItem("savedCities"));
+  try {
+    const savedCitiesFromStorage = localStorage.getItem("savedCities");
+    if (savedCitiesFromStorage) {
+      savedCities.value = JSON.parse(savedCitiesFromStorage);
+    }
+
+    const locationObj = {
+      id: uid(),
+      state: route.params.state,
+      city: route.params.city,
+      coords: {
+        lat: route.query.lat,
+        lng: route.query.lng,
+      },
+    };
+
+    savedCities.value.push(locationObj);
+    localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
+
+    let query = { ...route.query };
+    delete query.preview;
+    query.id = locationObj.id;
+    router.replace({ query });
+  } catch (error) {
+    console.error("Error adding city:", error);
   }
-
-  const locationObj = {
-    id: uid(),
-    state: route.params.state,
-    city: route.params.city,
-    coords: {
-      lat: route.query.lat,
-      lng: route.query.lng,
-    },
-  };
-
-  savedCities.value.push(locationObj);
-  localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
-
-  let query = Object.assign({}, route.query);
-  delete query.preview;
-  query.id = locationObj.id;
-  router.replace({ query });
 };
 
-const modalActive = ref(null);
 const toggleModal = () => {
   modalActive.value = !modalActive.value;
 };

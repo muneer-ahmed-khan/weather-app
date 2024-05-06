@@ -2,12 +2,12 @@
   <div>
     <Suspense>
       <AsyncCityView />
-      <template #fallback><CityViewSkeleton /></template>
+      <template #fallback><SkeletonCityView /></template>
     </Suspense>
   </div>
 </template>
 
 <script setup>
-import AsyncCityView from "../components/AsyncCityView.vue";
-import CityViewSkeleton from "../components/CityViewSkeleton.vue";
+import AsyncCityView from "@/components/weather/AsyncCityView.vue";
+import SkeletonCityView from "@/components/skeletons/SkeletonCityView.vue";
 </script>
