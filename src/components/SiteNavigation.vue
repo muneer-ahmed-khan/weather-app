@@ -76,7 +76,7 @@ const addCity = () => {
     city: route.params.city,
     coords: {
       lat: route.query.lat,
-      lan: route.query.lan,
+      lng: route.query.lng,
     },
   };
 
@@ -85,6 +85,7 @@ const addCity = () => {
 
   let query = Object.assign({}, route.query);
   delete query.preview;
+  query.id = locationObj.id;
   router.replace({ query });
 };
 
